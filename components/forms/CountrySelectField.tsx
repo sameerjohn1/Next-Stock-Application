@@ -41,6 +41,7 @@ const CountrySelect = ({
 
   // Get country options with flags
   const countries = countryList().getData();
+  const selectedCountry = countries.find((c) => c.value === value);
 
   // Helper function to get flag emoji
   const getFlagEmoji = (countryCode: string) => {
@@ -62,6 +63,11 @@ const CountrySelect = ({
         >
           {value ? (
             <span className="flex items-center gap-2">
+              <img
+                src={`https://flagcdn.com/24x18/${value.toLowerCase()}.png`}
+                alt=""
+                className="w-5 h-4 rounded-sm"
+              />
               <span>{getFlagEmoji(value)}</span>
               <span>{countries.find((c) => c.value === value)?.label}</span>
             </span>
@@ -102,6 +108,11 @@ const CountrySelect = ({
                     )}
                   />
                   <span className="flex items-center gap-2">
+                    <img
+                      src={`https://flagcdn.com/24x18/${country.value.toLowerCase()}.png`}
+                      alt=""
+                      className="w-5 h-4 rounded-sm"
+                    />
                     <span>{getFlagEmoji(country.value)}</span>
                     <span>{country.label}</span>
                   </span>
