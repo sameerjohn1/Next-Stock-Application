@@ -118,7 +118,9 @@ export const WELCOME_EMAIL_TEMPLATE = `<!DOCTYPE html>
                             </h1>
                             
                             <!-- Intro Text -->
-                            {{intro}}  
+                            <p class="mobile-text dark-text-secondary" style="margin: 0 0 30px 0; font-size: 16px; line-height: 1.6; color: #CCDADC;">
+                                {{intro}}
+                            </p>  
                             
                             <!-- Feature List Label -->
                             <p class="mobile-text dark-text-secondary" style="margin: 0 0 15px 0; font-size: 16px; line-height: 1.6; color: #CCDADC; font-weight: 600;">

@@ -11,17 +11,22 @@ export const   transporter=nodemailer.createTransport({
 
 
 export const sendWelcomeEmail=async({email,name,intro}:WelcomeEmailData)=>{
- const htmlTemplate=WELCOME_EMAIL_TEMPLATE.replace('{{name}}',name).replace('{{intro}}',intro);
+  try {
+    const htmlTemplate=WELCOME_EMAIL_TEMPLATE.replace('{{name}}',name).replace('{{intro}}',intro);
 
- const mailOptions={
-    from:`"Signalist" <sameerprogrammer5@gmail.com>`,
-    to:email,
-    subject:"Welcome to Signalist - Your stock market toolkit is ready!",
-    text:"Thanks for joining Signalist",
-    html:htmlTemplate,
- 
- }
+    const mailOptions={
+        from:`"Signalist" <sameerprogrammer5@gmail.com>`,
+        to:email,
+        subject:"Welcome to Signalist - Your stock market toolkit is ready!",
+        text:"Thanks for joining Signalist",
+        html:htmlTemplate,
+    }
 
- await transporter.sendMail(mailOptions)
-   
+    const result=await transporter.sendMail(mailOptions);
+    console.log(`Email sent successfully to ${email}:`, result.response);
+    return {success:true, messageId:result.messageId};
+  } catch (error) {
+    console.error(`Failed to send email to ${email}:`, error);
+    throw error;
+  }
 }
