@@ -110,7 +110,8 @@ export const sendDailyNewsSummary = inngest.createFunction(
                 const results = await Promise.allSettled(
                     userNewsSummaries.map(async ({ user, newsContent}) => {
                         if(!newsContent) return false;
-                        return await sendNewsSummaryEmail({ email: user.email, date: getFormattedTodayDate(), newsContent })
+
+                        return await sendNewsSummaryEmail({ email: user.email, date: getFormattedTodayDate(), newsContent });
                     })
                 )
                 const failures = results.filter(r => r.status === 'rejected');
