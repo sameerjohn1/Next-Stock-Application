@@ -50,8 +50,7 @@ export const sendSignUpEmail = inngest.createFunction(
 
 export const sendDailyNewsSummary = inngest.createFunction(
     { id: 'daily-news-summary' },
-    [ { event: 'app/send.daily.news' }, { cron: '4 15 * * *' } ],
-    
+    [ { event: 'app/send.daily.news' }, { cron: '0 12 * * *' } ],
     async ({ step }) => {
         // Step #1: Get all users for news delivery
         const users = await step.run('get-all-users', getAllUsersForNewsEmail)
@@ -88,7 +87,7 @@ export const sendDailyNewsSummary = inngest.createFunction(
                 try {
                     const prompt = NEWS_SUMMARY_EMAIL_PROMPT.replace('{{newsData}}', JSON.stringify(articles, null, 2));
 
-                    const response = await step.ai.infer(`summarize-news-${user.id || user.email.split('@')[0]}`, {
+                    const response = await step.ai.infer(`summarize-news-${user.email}`, {
                         model: step.ai.models.gemini({ model: 'gemini-2.5-flash-lite' }),
                         body: {
                             contents: [{ role: 'user', parts: [{ text:prompt }]}]
@@ -107,17 +106,13 @@ export const sendDailyNewsSummary = inngest.createFunction(
 
         // Step #4: (placeholder) Send the emails
         await step.run('send-news-emails', async () => {
-                const results = await Promise.allSettled(
+                await Promise.all(
                     userNewsSummaries.map(async ({ user, newsContent}) => {
                         if(!newsContent) return false;
 
-                        return await sendNewsSummaryEmail({ email: user.email, date: getFormattedTodayDate(), newsContent });
+                        return await sendNewsSummaryEmail({ email: user.email, date: getFormattedTodayDate(), newsContent })
                     })
                 )
-                const failures = results.filter(r => r.status === 'rejected');
-                if (failures.length > 0) {
-                    console.error(`Failed to send ${failures.length} news emails`);
-                }
             })
 
         return { success: true, message: 'Daily news summary emails sent successfully' }
